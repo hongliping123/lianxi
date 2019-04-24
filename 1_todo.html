@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="js/vue.js"></script>
+<script>
+//1. 按图创建四个组件: todo,todo-add,todo-list,todo-item
+
+var todoAdd={
+  template:"#tplTodoAdd",
+  props:["tasks"],
+  methods:{
+    add(){
+      this.tasks.push(this.task);
+      this.task="";//添加后，清空文本框
+    }
+  },
+  data(){
+    return {
+      task:""
+    }
+  }
+};
+
+var todoItem={
+  template:"#tplTodoItem",
+  props:["i","task","tasks"],
+  methods:{
+    del(){
+      this.tasks.splice(this.i,1)
+    }
+  },
+  data(){
+    return {
+
+    }
+  }
+};
+
+var todoList={
+  template:"#tplTodoList",
+  props:["tasks"],//自定义属性名
+  data(){
+    return {
+      //tasks:来自爹todo的tasks
+    }
+  },
+  components:{ todoItem }
+  //Vue自动转为<todo-item> 
+};
+
+
+Vue.component("todo",{
+  template:"#tplTodo",
+  data(){
+    return {//相当于以前的data
+      tasks:["吃饭","睡觉","打亮亮"]
+    }
+  },
+  components:{ todoAdd, todoList }
+  //vue自动转为:<todo-add>和<todo-list>
+})
+
+</script>
+</head>
+<body>
+<!--2. 创建四个组建的模板: tplTodo, tplTodoAdd, tplTodoList, tplTodoItem
+在父组件内，包含子组件的标签-->
+<template id="tplTodo">
+  <div>
+    <h1>待办事项列表</h1>
+    <todo-add :tasks="tasks"></todo-add>
+    <todo-list :tasks="tasks"></todo-list>
+<!--todoAdd={ props:["tasks"]}-->
+  </div>
+</template>
+<template id="tplTodoAdd">
+  <div>
+    <input v-model="task"><button @click="add">添加</button>
+  </div>
+</template>
+<template id="tplTodoList">
+  <ul>
+    <todo-item v-for="(task,i) of tasks" :i="i" :task="task" :key="i" :tasks="tasks"></todo-item>
+<!--todoItem={props:["i","task"]}-->
+  </ul>
+</template>
+<template id="tplTodoItem">
+  <li>{{i+1}} - {{task}} <button @click="del">x</button></li>
+</template>
+<!--主界面div#app中，仅添加主组件的<todo>-->
+<div id="app">
+  <todo></todo><!--执行时会被new Vue逐个替换为组件模板的内容-->
+</div>
+<script>
+var vm=new Vue({
+  el:"#app",
+  data:{
+    
+  }
+})
+</script>
+</body>
+</html>
