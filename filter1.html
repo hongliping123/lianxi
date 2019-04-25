@@ -7,8 +7,14 @@
     <title>Document</title>
     <script src="../js/vue.js"></script>
     <script>
-        Vue.filter("sexFILTER",function(value){
+        Vue.filter("sexFILTER",function(value,lang){
+            if(lang=="cn"){
             return value==1?'♂':'♀'
+            }if (lang=="hn") {
+            return value==1?'男':'女'
+            } else {
+                alert('您输入的不正确请从新输入')
+            }
         })
         Vue.filter("dateFiLER",function(value){
             return new Date(value).toLocaleString()
@@ -17,15 +23,17 @@
 </head>
 <body>
     <div id="app">
-       {{sex | sexFILTER}}
+       <h1>{{sex | sexFILTER(a)}}</h1>
        {{time | dateFiLER}}
+       <input type="text" name="" id="" v-model="a">
     </div>
     <script>
         var vm=new Vue({
             el:"#app",
             data:{
-                sex:0,
-                time:5412110120
+                sex:1,
+                time:5412110120,
+                a:"hn"
             }
         })
     </script>
